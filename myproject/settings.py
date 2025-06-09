@@ -90,16 +90,16 @@ DATABASES = {
    "default": dj_database_url.parse("postgresql://calorie_tracker_tz2y_user:LToL354UBxXvwnngaTsiNl2sTxFBSzul@dpg-d0relep5pdvs73du14p0-a.oregon-postgres.render.com/calorie_tracker_tz2y") 
 }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'socialmedia',
-#         'USER': 'db_user',
-#         'PASSWORD': '123456', 
-#         'HOST': 'localhost',  # or your database host
-#         'PORT': '5432',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'socialmedia',
+        'USER': 'db_user',
+        'PASSWORD': '123456', 
+        'HOST': 'localhost',  # or your database host
+        'PORT': '5432',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -149,7 +149,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Add at the bottom
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = 'login'
+LOGOUT_REDIRECT_URL = 'landing'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

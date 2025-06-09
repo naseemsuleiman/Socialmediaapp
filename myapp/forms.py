@@ -29,7 +29,7 @@ from .models import Profile, Post
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['image', 'bio', 'location', 'website']
+        fields = ['image', 'bio', 'location', 'website','user']
 
 class PostForm(forms.ModelForm):
     class Meta:
