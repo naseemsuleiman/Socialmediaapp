@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Users{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Search Users</h4>
+            </div>
+            <div class="card-body">
+                <form method="get" action="{% url 'search_users' %}">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" name="query" value="{{ query }}" placeholder="Search by username or name...">
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </div>
+                </form>
+                
+                {% if users %}
+                <div class="list-group">
+                    {% for result_user in users %}
+                    <div class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <img src="{{ result_user.profile.image.url }}" class="rounded-circle me-3" width="50" height="50">
+                                <div>
+                                    <a href="{% url 'profile' result_user.id %}" class="text-decoration-none">
+                                        <h6 class="mb-0">{{ result_user.username }}</h6>
+                                    </a>
+                                    <small class="text-muted">{{ result_user.profile.bio|default:"" }}</small>
+                                </div>
+                            </div>
+                            {% if result_user != request.user %}
+                            <form method="post" action="{% if result_user in request.user.following.all %}{% url 'unfollow_user' result_user.id %}{% else %}{% url 'follow_user' result_user.id %}{% endif %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-{% if result_user in request.user.following.all %}outline-primary{% else %}primary{% endif %}">
+                                    {% if result_user in request.user.following.all %}Following{% else %}Follow{% endif %}
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% elif query %}
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">No users found</h5>
+                        <p class="card-text">Try a different search term</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}VibeHub{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#EBD0C9',  // Soft peach
+                        secondary: '#FA6986', // Vibrant pink
+                        accent: {
+                            400: '#FA6986',
+                            500: '#E84A6F',
+                            600: '#D62D5A',
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .profile-pic {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+        }
+        .post-img {
+            max-height: 500px;
+            object-fit: contain;
+        }
+        .comment-img {
+            width: 40px;
+            height: 40px;
+        }
+        body {
+            background-color: #F8F5F2; /* Light neutral background */
+        }
+        nav {
+            background-color: #2A2A2A; /* Dark nav for contrast */
+        }
+        .btn-primary {
+            background-color: #FA6986;
+            border-color: #FA6986;
+        }
+        .btn-primary:hover {
+            background-color: #E84A6F;
+            border-color: #E84A6F;
+        }
+        .text-primary {
+            color: #EBD0C9 !important;
+        }
+        .text-secondary {
+            color: #FA6986 !important;
+        }
+        .bg-primary {
+            background-color: #EBD0C9 !important;
+        }
+        .bg-secondary {
+            background-color: #FA6986 !important;
+        }
+        .border-primary {
+            border-color: #EBD0C9 !important;
+        }
+        .border-secondary {
+            border-color: #FA6986 !important;
+        }
+        .hover\:bg-primary:hover {
+            background-color: #EBD0C9 !important;
+        }
+        .hover\:bg-secondary:hover {
+            background-color: #FA6986 !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <nav class="bg-gray-900 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="{% url 'home' %}" class="text-secondary font-bold text-xl">VibeHub</a>
+                    </div>
+                    <div class="hidden sm:ml-1 sm:flex sm:items-center">
+                        <a href="{% url 'home' %}" class="text-primary hover:text-secondary px-3 py-2 text-sm font-medium">
+                            <i class="fas fa-home mr-1"></i> Home
+                        </a>
+                        
+                    </div>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                    {% if user.is_authenticated %}
+                    <form class="flex mx-2" action="{% url 'search_users' %}" method="GET">
+                        <input class="form-input px-4 py-2 rounded-l-md border-0 bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-secondary" type="search" name="query" placeholder="Search users">
+                        <button class="bg-secondary hover:bg-accent-500 text-white px-4 py-2 rounded-r-md" type="submit">Search</button>
+                    </form>
+                    {% endif %}
+                    <div class="ml-3 relative">
+                        {% if user.is_authenticated %}
+                        <div class="relative">
+                            <button type="button" class="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary" id="user-menu">
+                                <span class="sr-only">Open user menu</span>
+                                {% if user.profile.image %}
+                                    <img class="h-8 w-8 rounded-full" src="{{ user.profile.image.url }}" alt="">
+                                {% else %}
+                                    <i class="fas fa-user-circle text-primary text-2xl"></i>
+                                {% endif %}
+                                <span class="text-primary ml-2 self-center">{{ user.username }}</span>
+                            </button>
+                            <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-gray-800 ring-1 ring-black ring-opacity-5 hidden" id="user-dropdown">
+                                <a href="{% url 'profile' user.id %}" class="block px-4 py-2 text-sm text-primary hover:bg-gray-700"><i class="fas fa-user mr-2"></i>Profile</a>
+                                <a href="{% url 'edit_profile' %}" class="block px-4 py-2 text-sm text-primary hover:bg-gray-700"><i class="fas fa-cog mr-2"></i>Settings</a>
+                                <div class="border-t border-gray-700"></div>
+                                <a href="{% url 'logout' %}" class="block px-4 py-2 text-sm text-primary hover:bg-gray-700"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="flex space-x-4">
+                            <a href="{% url 'login' %}" class="text-primary hover:bg-gray-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                                <i class="fas fa-sign-in-alt mr-1"></i> Login
+                            </a>
+                            <a href="{% url 'register' %}" class="text-primary hover:bg-gray-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                                <i class="fas fa-user-plus mr-1"></i> Register
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="-mr-2 flex items-center sm:hidden">
+                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-primary hover:text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-secondary" id="mobile-menu">
+                        <span class="sr-only">Open main menu</span>
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div class="hidden sm:hidden bg-gray-800" id="mobile-menu-items">
+            <div class="pt-2 pb-3 space-y-1">
+                <a href="{% url 'home' %}" class="text-primary hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+                    <i class="fas fa-home mr-2"></i> Home
+                </a>
+                <a href="{% url 'explore' %}" class="text-primary hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+                    <i class="fas fa-hashtag mr-2"></i> Explore
+                </a>
+                {% if user.is_authenticated %}
+                <form class="px-3 py-2" action="{% url 'search_users' %}" method="GET">
+                    <div class="flex">
+                        <input class="flex-1 px-3 py-2 rounded-l-md bg-gray-700 text-white placeholder-gray-400" type="search" name="query" placeholder="Search users">
+                        <button class="bg-secondary hover:bg-accent-500 text-white px-3 py-2 rounded-r-md" type="submit">Go</button>
+                    </div>
+                </form>
+                <a href="{% url 'profile' user.id %}" class="text-primary hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+                    <i class="fas fa-user mr-2"></i> Profile
+                </a>
+                <a href="{% url 'edit_profile' %}" class="text-primary hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+                    <i class="fas fa-cog mr-2"></i> Settings
+                </a>
+                <a href="{% url 'logout' %}" class="text-primary hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </a>
+                {% else %}
+                <a href="{% url 'login' %}" class="text-primary hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+                    <i class="fas fa-sign-in-alt mr-2"></i> Login
+                </a>
+                <a href="{% url 'register' %}" class="text-primary hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+                    <i class="fas fa-user-plus mr-2"></i> Register
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-6 max-w-7xl">
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} mb-4 rounded-lg py-3 px-4 text-sm flex justify-between items-center {% if message.tags == 'success' %}bg-primary text-gray-800{% elif message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-secondary text-white{% endif %}">
+                {{ message }}
+                <button type="button" class="close-btn ml-2 text-lg">&times;</button>
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <footer class="bg-gray-900 text-primary py-6 mt-10">
+        <div class="container mx-auto px-4 text-center">
+            <p class="mb-0">© {% now "Y" %} VibeHub. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu-items');
+            menu.classList.toggle('hidden');
+        });
+
+        // User dropdown toggle
+        document.getElementById('user-menu').addEventListener('click', function() {
+            const dropdown = document.getElementById('user-dropdown');
+            dropdown.classList.toggle('hidden');
+        });
+
+        // Close message alerts
+        document.querySelectorAll('.close-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.parentElement.remove();
+            });
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
+</html>
