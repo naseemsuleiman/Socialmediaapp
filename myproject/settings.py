@@ -89,6 +89,14 @@ DATABASES = {
    # the link here is the external link provided on postgresql web service db 
    "default": dj_database_url.parse("postgresql://calorie_tracker_tz2y_user:LToL354UBxXvwnngaTsiNl2sTxFBSzul@dpg-d0relep5pdvs73du14p0-a.oregon-postgres.render.com/calorie_tracker_tz2y") 
 }
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
+}
+DATABASES['default']['DISABLE_SERVER_SIDE_CURSORS'] = True
 
 DATABASES = {
     'default': {
