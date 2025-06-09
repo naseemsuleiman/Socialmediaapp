@@ -96,8 +96,8 @@ DATABASES = {
         'NAME': 'socialmedia',
         'USER': 'db_user',
         'PASSWORD': '123456', 
-        'HOST': 'localhost',  # or your database host
-        'PORT': '5432',
+        # 'HOST': 'localhost',  # or your database host
+        # 'PORT': '5432',
     }
 }
 
